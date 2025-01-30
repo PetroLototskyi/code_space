@@ -1,0 +1,124 @@
+{% extends "layout.html" %}
+{% load custom_filters %}
+{% load static %}
+{% block title %}Requests{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">All Requests</h1>
+
+<div class="table-responsive">
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="width: 5%;">Req. #
+                <!-- Request filter -->
+                <div class="mb-3 mt-2">
+                    <input id="request-number-filter" type="text" class="form-control" placeholder="#" style="width: 60px;">
+                </div>
+            </th>
+            <th style="width: 4%;">By </th>
+            <th style="width: 12%;">Request Type</th>
+            <th style="width: 7%;">Date</th>
+            <th  style="width: 17%;">Description</th>
+            <th  style="width: 15%;">Reason for Action</th>
+            <th >Status
+                <div class="mb-3 mt-2">
+                    <!-- Status filter -->
+                    <select id="status-filter" class="form-select" style="width: 160px;">
+                        <option value="">All</option>
+                        <option value="Unprocessed">Unprocessed</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Submitted For Review">Submitted For Review</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+
+            </th>
+            <th style="width: 7%;">Due Date</th>
+            <!-- <th>Date Completed</th> -->
+            <th  style="width: 12%;">Notes</th>
+            <th  style="width: 9%;">Attachment</th>
+            <th  class= "action-btn" style="white-space: nowrap; width: 5%;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in requests %}
+        <tr>
+            <td>
+                <a href="{% url 'edit_request' request.id %}" class="card-link edit-link">{{ request.request_number }}</a>
+            </td>
+            <td>{{ request.requested_by }}</td>
+            <td>{{ request.request_type }}</td>
+            <td>{{ request.request_date|date:"m/d/y"|default:"N/A" }}</td>
+            <td>
+                <!-- Description field max 50 characters -->
+                {{ request.description|truncatechars:50 }}
+                {% if request.description|length > 50 %}
+                    <a href="#" class="text-primary" data-bs-toggle="collapse" data-bs-target="#desc-{{ forloop.counter }}">[Expand]</a>
+                    <div id="desc-{{ forloop.counter }}" class="collapse">
+                        {{ request.description|slice:"49:" }}  <!-- Skip the first 49 characters -->
+                    </div>
+                {% endif %}
+            </td>
+            <td>
+                <!-- Reson field max 50 characters -->
+                {{ request.reason_for_action|truncatechars:50 }}
+                {% if request.reason_for_action|length > 50 %}
+                    <a href="#" class="text-primary" data-bs-toggle="collapse" data-bs-target="#desc-{{ forloop.counter }}">[Expand]</a>
+                    <div id="desc-{{ forloop.counter }}" class="collapse">
+                        {{ request.reason_for_action|slice:"49:" }}  <!-- Skip the first 49 characters -->
+                    </div>
+                {% endif %}
+            </td>
+            <td>{{ request.status|default:"Unprocessed" }}</td>
+            <td>{{ request.due_date|date:"m/d/y"|default:"N/A" }}</td>
+            <!-- <td>{{ request.date_completed }}</td> -->
+            <td>
+                <!-- Notes max 50 characters -->
+                {{ request.notes|truncatechars:50 }}
+                {% if request.notes|length > 50 %}
+                    <a href="#" class="text-primary" data-bs-toggle="collapse" data-bs-target="#desc-{{ forloop.counter }}">[Expand]</a>
+                    <div id="desc-{{ forloop.counter }}" class="collapse">
+                        {{ request.notes|slice:"49:" }}  <!-- Skip the first 49 characters -->
+                    </div>
+                {% endif %}
+            </td>
+            <!-- Attachment -->
+            <td style="max-width: 125px; overflow: hidden; text-overflow: ellipsis;">
+                {% if request.attachments.all %}
+
+                        {% for attachment in request.attachments.all %}
+                            <li>
+                                <a href="{{ attachment.file.url }}" target="_blank" rel="noopener noreferrer">
+                                    {{ attachment.file.name|basename }}
+                                </a>
+                            </li>
+                        {% endfor %}
+
+                {% else %}
+                    None
+                {% endif %}
+            </td>
+            <!-- Edit btn -->
+            <td>
+                <a href="{% url 'edit_request' request.id %}"  class="btn btn-outline-dark my-1 action-btn"
+                data-bs-toggle="tooltip" data-bs-placement="top"
+                title="Click here to edit the request.">
+                Edit</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<!-- Create request btn -->
+<div class="mt-5">
+    <a href="{% url 'create_request' %}" class="btn btn-success btn-lg">Create a New Request</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'eco_requests/requests.js' %}"></script>
+{% endblock scripts %}

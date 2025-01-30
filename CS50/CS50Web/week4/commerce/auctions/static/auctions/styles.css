@@ -1,0 +1,96 @@
+body {
+    padding: 10px;
+}
+.item-container {
+    background-color: #f8f9fa; /* Light background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin: 20px auto; /* Center the container */
+    max-width: 600px; /* Max width for larger screens */
+}
+
+.item-title {
+    color: #343a40; /* Darker text for the title */
+    font-size: 1.5em; /* Larger font size */
+    margin-bottom: 10px; /* Spacing below the title */
+}
+
+.item-price {
+    font-size: 1.2rem; /* Larger font for emphasis */
+    font-weight: bold; /* Bold to make it stand out */
+    color: #333; /* Dark gray color */
+    margin-top: 0.1rem; /* Adds some space above */
+    margin-bottom: 0.1rem;
+    font-family: Arial, sans-serif; /* Matches eBay's typical font style */
+}
+.item-price::before {
+    content: "$"; /* Ensures the dollar sign is before the price */
+    margin-right: 0.08rem; /* Small space between the dollar sign and price */
+    font-size: 1rem; /* Slightly smaller for the dollar sign */
+    vertical-align: top; /* Aligns the dollar sign with the top of the price */
+}
+
+.item-description {
+    color: #6c757d; /* Muted text color */
+    font-size: 1em; /* Regular font size */
+    margin: 15px 0; /* Spacing above and below */
+}
+
+.item-details {
+    color: #495057; /* Text color for details */
+    font-size: 0.9em; /* Slightly smaller font for details */
+}
+.card {
+    margin: 15px; /* Spacing */
+}
+
+.item_link {
+    font-weight: bold;   /* Makes the text bold */
+    color: blue;        /* Changes the text color */
+    text-decoration: none; /* Removes underline from links */
+}
+
+.success-message {
+    color: green;                  /* Green text color */
+    background-color: lightyellow; /* Different background color */
+    padding: 10px;                /* Padding around the text */
+    border-radius: 5px;           /* Rounded corners */
+    font-weight: bold;             /* Optional: Make text bold */
+}
+
+/* Container Styling */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Form Group Styling */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+/* Input and Textarea Styling */
+.form-control, .form-select {
+    border-radius: 0.25rem;
+    border: 1px solid #ced4da;
+    padding: 0.75rem;
+    font-size: 1rem;
+    width: 100%;
+}
+
+/* Button Styling */
+.btn {
+    border-radius: 0.25rem;
+}
+
+/* Shadow and Rounded Corners */
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+}
+
+.rounded {
+    border-radius: 0.375rem;
+}
+
+.bg-light {
+    background-color: #f8f9fa !important;
+}

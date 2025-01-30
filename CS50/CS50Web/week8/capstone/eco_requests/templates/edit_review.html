@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Edit Review</h2>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="review">Edit Comment</label>
+        <textarea name="new_review" class="form-control">{{ review.review_comments }}</textarea>
+        <p></p>
+        <label for="attachment">Edit Attachment (if needed):</label>
+        <p><input type="file" name="attachment"></p>
+
+        {% if review.attachment %}
+            <br>
+            <strong>Current Attachment:</strong>
+            <p><a href="{{ review.attachment.url }}" target="_blank">View Attachment</a></p>
+
+            <p></p>
+            <label for="delete_attachment" style="display: inline; margin-right: 5px;">Delete this attachment?</label>
+            <input type="checkbox" name="delete_attachment" value="true" style="display: inline;">
+
+        {% endif %}
+
+        <p></p>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+
+    </div>
+</form>
+<!-- "Back to Reviews" Button -->
+<a href="{% url 'drawing_reviews' drawing.id %}" class="btn btn-secondary mt-3">Back to Reviews</a>
+{% endblock %}

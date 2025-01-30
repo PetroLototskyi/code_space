@@ -1,0 +1,58 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<script>
+
+     // Function to handle the like/unlike action via AJAX
+     function toggleLike(postId) {
+        fetch(`/toggle_like/${postId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const likeButton = document.querySelector(`#like-button-${postId}`);
+            likeButton.textContent = data.liked ? 'Unlike' : 'Like';
+            const likeCount = document.querySelector(`#like-count-${postId}`);
+            likeCount.textContent = data.likes + ' Likes';
+        });
+    }
+</script>
+    <h2>Posts from Users You Follow</h2>
+
+    {% for post in posts %}
+        <div class="post">
+            <h5><a href="{% url 'profile' post.user.username %}">{{ post.user.username }}</a></h5>
+            <p>{{ post.content }}</p>
+            <small>{{ post.timestamp }}</small>
+            <!-- <p>{{ post.likes.count }} Likes</p> -->
+            {% if user.is_authenticated %}
+            <p id="like-count-{{ post.id }}">{{ post.likes.count }} Likes</p>
+
+            <button class="btn btn-link" onclick="toggleLike({{ post.id }})" id="like-button-{{ post.id }}">
+                {% if request.user in post.likes.all %}
+                    Unlike
+                {% else %}
+                    Like
+                {% endif %}
+            </button>
+            {% endif %}
+        </div>
+
+
+
+    <hr>
+    {% endfor %}
+
+    <div class="pagination">
+        {% if posts.has_previous %}
+            <a href="?page={{ posts.previous_page_number }}" class="btn btn-secondary">Previous</a>
+        {% endif %}
+        {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}" class="btn btn-secondary">Next</a>
+        {% endif %}
+    </div>
+{% endblock %}

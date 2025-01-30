@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Attribute</title>
+        <style>
+            /*
+    a, b Multiple Element Selector
+    a b Descendant Selector
+    a > b Child Selector
+    a + b Adjacent Sibling Selector
+    [a=b] Attribute Selector
+    a:b Pseudoclass Selector
+    a::b Pseudoelement Selector
+*/
+           a    {
+                color: blue;
+            }
+            a[ href="https://facebook.com"] { /* only for item where tad equil specific value*/
+                color: red;
+            }
+        </style>
+    </head>
+    <body>
+       <ul>
+            <li><a href="https://google.com">Google</a></li>
+            <li><a href="https://facebook.com">Facebook</a></li>
+            <li><a href="https://amazon.com">Amazon</a></li>
+        </ul>
+
+    </body>
+</html>

@@ -1,0 +1,46 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+    <h2>{{ user.username }}'s Profile</h2>
+
+    <p>Followers: {{ followers_count }}</p>
+    <p>Following: {{ following_count }}</p>
+
+    {% if not user == request.user %}
+        <!-- Show Follow/Unfollow button -->
+        {% if is_following %}
+            <form action="{% url 'profile' username=user.username %}" method="post">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Unfollow</button>
+            </form>
+        {% else %}
+            <form action="{% url 'profile' username=user.username %}" method="post">
+                {% csrf_token %}
+                <button class="btn btn-success" type="submit">Follow</button>
+            </form>
+        {% endif %}
+    {% endif %}
+
+    <h3>Posts</h3>
+    {% for post in posts %}
+        <div class="post">
+            <p><strong>{{ post.user.username }}</strong> - {{ post.timestamp }}</p>
+
+            <!-- If the post is from the logged-in user, show Edit button -->
+            {% if post.user == user %}
+                <button class="btn btn-primary edit-btn" data-post-id="{{ post.id }}">Edit</button>
+            {% endif %}
+
+            <!-- Post content, initially shown -->
+            <p class="post-content" id="post-content-{{ post.id }}">{{ post.content }}</p>
+
+            <!-- Edit form (hidden by default) -->
+            <form class="edit-form" id="edit-form-{{ post.id }}" method="POST" action="{% url 'edit_post' post.id %}" style="display:none;">
+                {% csrf_token %}
+                <textarea class="form-control" name="content" id="content-{{ post.id }}">{{ post.content }}</textarea>
+                <button class="btn btn-success" type="submit">Save</button>
+            </form>
+        </div>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,194 @@
+{% extends "layout.html" %}
+{% load custom_filters %}
+{% block title %}Request Details{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Request #{{ request.request_number }} Details</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table class="table">
+        <tr>
+            <th>Request Number</th>
+            <td>{{ request.request_number }}</td>
+        </tr>
+        <tr>
+            <th>Request Date</th>
+            <td>{{ request.request_date }}</td>
+        </tr>
+        <tr>
+            <th>Due Date</th>
+            <td>{{ request.due_date }}</td>
+        </tr>
+        <tr>
+            <th>Requested By</th>
+            <td>{{ request.requested_by }}</td>
+        </tr>
+        <tr>
+            <th>Request Type</th>
+            <td>{{ request.request_type }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>
+                <select name="status" class="form-control">
+                    <option value="Unprocessed" {% if request.status == "Unprocessed" %}selected{% endif %}>Unprocessed</option>
+                    <option value="In Progress" {% if request.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                    <option value="Submitted For Review" {% if request.status == "Submitted For Review" %}selected{% endif %}>Subm. For Review</option>
+                    <option value="Cancelled" {% if request.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                    <option value="Completed" {% if request.status == "Completed" %}selected{% endif %}>Completed</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>Assigned</th>
+            <td>{{ request.assigned }}</td>
+        </tr>
+        <tr>
+            <th>Date Completed</th>
+            <td><input type="date" name="date_completed" value="{{ request.date_completed|date:'Y-m-d' }}" class="form-control"></td>
+        </tr>
+        <tr>
+            <th>Description of Required Actions</th>
+            <td>{{ request.description }}</td>
+        </tr>
+        <tr>
+            <th>Reason for Action</th>
+            <td>{{ request.reason_for_action }}</td>
+        </tr>
+        <tr>
+            <th>Notes</th>
+            <td><textarea name="notes" class="form-control" placeholder="Notes">{{ request.notes }}</textarea></td>
+        </tr>
+        <tr>
+            <th>Description of Performed Actions</th>
+            <td><textarea name="description_of_action" class="form-control" placeholder="Description of Performed Action">{{ request.description_of_action }}</textarea></td>
+        </tr>
+        <tr>
+            <th>Validation of Action</th>
+            <td><textarea name="validation_of_action" class="form-control" placeholder="Validation of Action">{{ request.validation_of_action }}</textarea></td>
+        </tr>
+         <!-- Attachments Section -->
+         <tr>
+            <th>Attachments</th>
+            <td>
+                {% if request.attachments.exists %}
+                    <ul>
+                        {% for attachment in request.attachments.all %}
+                            <li>
+                                <a href="{{ attachment.file.url }}" target="_blank" rel="noopener noreferrer">{{ attachment.file.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No attachments</p>
+                {% endif %}
+
+
+            </td>
+            </tr>
+        </table>
+
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+<br>
+<table class="table">
+        <tr>
+        <th>Drawings</th>
+            <td>
+                <div class="form-group">
+                    {% if request.drawing_request.exists %}
+                    <!-- Existing Drawings Table -->
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 30%;">File</th>
+                                    <th style="width: 20%;">Drawing Number</th>
+                                    <th style="width: 10%;">Revision</th>
+                                    <th style="width: 12%;">Status</th>
+                                    <th style="width: 20%;">Comments</th>
+                                    <th style="width: 10%;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for drawing in request.drawing_request.all %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ drawing.file.url }}?t={{ drawing.updated_at|date:'U' }}" target="_blank" rel="noopener noreferrer">{{ drawing.file.name|basename }}</a>
+                                            <form action="{% url 'reupload_drawing' drawing.id %}" method="POST" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <input type="file" name="new_drawing_file" class="form-control mb-2" accept=".pdf, .jpg, .png, .dwg">
+                                                <button type="submit" class="btn btn-outline-primary btn-sm mt-2">Re-upload</button>
+
+                                            </form>
+                                        </td>
+                                        <td>{{ drawing.drawing_number }}</td>
+                                        <td>{{ drawing.drawing_revision }}</td>
+                                        <td>{{ drawing.drawing_status }}</td>
+                                        <td>{{ drawing.drawing_comments }}</td>
+
+                                        <td>
+                                            <a href="{% url 'delete_drawing' drawing.id %}" class="text-danger" onclick="return confirm('Are you sure you want to delete this drawing?');">Delete</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>None</p>
+                    {% endif %}
+                </div>
+
+       
+                <div class="form-group mt-3">
+               <!-- New Drawing Upload -->
+    <form method="post" enctype="multipart/form-data" action="{% url 'upload_drawing' request.id %}">
+        {% csrf_token %}
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th style="width: 28%;">Upload File</th>
+                    <th style="width: 22%;">Drawing Number</th>
+                    <th style="width: 10%;">Revision</th>
+                    <th style="width: 12%;">Status</th>
+                    <th>Comments</th>
+                    <th style="width: 10%;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="file" name="new_drawing" class="form-control" required>
+                    </td>
+                    <td>
+                        <input type="text" name="drawing_number" class="form-control" required>
+                    </td>
+                    <td><input type="text" name="drawing_revision" class="form-control" required></td>
+                    <td>
+                        <select name="drawing_status" class="form-control">
+                            {% for status, display in status_choices %}
+                                <option value="{{ status }}">{{ display }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <textarea name="drawing_comments" class="form-control"></textarea>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+                </div>
+            </td>
+        </tr>
+
+</table>
+
+<p></p>
+<a href="{% url 'engineering' %}" class="btn btn-secondary">Back to Engineering Requests</a>
+{% endblock %}

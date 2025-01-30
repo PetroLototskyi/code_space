@@ -1,0 +1,65 @@
+.card-link {
+    text-decoration: none;  /* Remove the underline */
+    display: block;         /* Ensure the link behaves like a block-level element, keeping card layout */
+    width: 100%;            /* Ensure the card takes up full width */
+    height: 100%;           /* Ensure the card takes up full height */
+}
+
+label {
+    font-weight: bold; /* Makes labels bold */
+    display: block;
+    margin-top: 20px;
+}
+.custom-btn {
+    padding: 1px 5px;  /* Adjusts padding to make it more narrow */
+    font-size: 16px;     /* Adjusts font size to make the button lower */
+
+}
+.custom-edit {
+    padding: 1px 18px;  /* Adjusts padding to make it more narrow */
+    font-size: 16px;     /* Adjusts font size to make the button lower */
+
+}
+
+.light-green-bg {
+    /* background-color: lightgreen; */
+    /* font-size: 30px; */
+    background-color: lightgreen;
+}
+
+thead {
+    background-color: #212589;
+    color: white;
+    text-align: center;
+}
+tbody tr:hover {
+    background-color: #d2d2d2;
+}
+.action-btn {
+    text-align: center;
+    background-color: #f8f9fa;
+}
+
+.d-flex {
+    margin: auto; /* Ensures the container is positioned in the middle if used in a larger layout */
+}
+
+#sort-req-number {
+    margin-left: 5px;
+    font-size: 12px;
+    padding: 2px 5px;
+    cursor: pointer;
+}
+
+#status-filter, #assigned-filter {
+    font-size: 14px;
+    padding: 4px;
+    width: 100%;
+}
+
+
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+}

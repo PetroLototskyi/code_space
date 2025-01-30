@@ -1,0 +1,51 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h2 class="text-center my-4">Create a New Listing</h2>
+
+<div class="container">
+    <form action="{% url 'new_listing' %}" method="POST" class="p-4 shadow-sm rounded bg-light">
+        {% csrf_token %}
+
+        <!-- Name Input -->
+        <div class="form-group mb-3">
+            <label for="name" class="form-label">Item Name</label>
+            <input type="text" name="name" class="form-control" placeholder="Enter item name" required>
+        </div>
+
+        <!-- Description Input -->
+        <div class="form-group mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea name="description" class="form-control" rows="4" placeholder="Add description" required></textarea>
+        </div>
+
+        <!-- Price Input -->
+        <div class="form-group mb-3">
+            <label for="base_price" class="form-label">Starting Price</label>
+            <input type="number" min="0.00" max="10000.00" step="0.01" name="base_price" class="form-control" placeholder="Enter the starting price" required>
+        </div>
+
+        <!-- Image Link Input -->
+        <div class="form-group mb-3">
+            <label for="image_link" class="form-label">Image Link</label>
+            <textarea name="image_link" class="form-control" rows="2" placeholder="Add image URL"></textarea>
+        </div>
+
+        <!-- Category Dropdown -->
+        <div class="form-group mb-4">
+            <label for="category" class="form-label">Category</label>
+            <select name="category" id="category" class="form-select" required>
+                {% for item in categories %}
+                    <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center">
+            <input type="submit" value="Save" class="btn btn-info w-50">
+        </div>
+    </form>
+</div>
+
+{% endblock %}

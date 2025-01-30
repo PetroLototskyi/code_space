@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Welcome to the ECO-Request Application</h1>
+
+    <div class="row">
+        <!-- Total Requests -->
+
+        <div class="col-md-4">
+            <a href="{% url 'requests' %}" class="card text-center card-link">
+                <div class="card-body">
+                    <h3>Total Requests</h3>
+                    <p class="display-4">{{ total_requests }}</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Unprocessed Requests -->
+        <div class="col-md-4">
+            <a href="{% url 'requests' %}?status=Unprocessed" class="card text-center card-link">
+                <div class="card-body">
+                    <h3>Unprocessed Requests</h3>
+                    <p class="display-4">{{ unprocessed_requests }}</p>
+                </div>
+            </a>
+        </div>
+        <!-- Completed Requests -->
+        <div class="col-md-4">
+            <a href="{% url 'requests' %}?status=Completed" class="card text-center card-link">
+                <div class="card-body">
+                    <h3>Completed Requests</h3>
+                    <p class="display-4">{{ completed_requests }}</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- In Progress -->
+        <div class="col-md-4 my-4">
+            <a href="{% url 'requests' %}?status=In Progress" class="card text-center card-link">
+                <div class="card-body">
+                    <h3>In Progress</h3>
+                    <p class="display-4">{{ in_progress_requests }}</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Submitted For Review -->
+        <div class="col-md-4 my-4">
+            <a href="{% url 'requests' %}?status=Submitted For Review" class="card text-center card-link">
+                <div class="card-body">
+                    <h3>Submitted For Review</h3>
+                    <p class="display-4">{{ submitted_for_review_requests }}</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Cancelled -->
+        <div class="col-md-4 my-4">
+            <a href="{% url 'requests' %}?status=Cancelled" class="card text-center card-link">
+                <div class="card-body">
+                    <h3>Cancelled</h3>
+                    <p class="display-4">{{ cancelled_requests }}</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <!-- Buttons -->
+            <div>
+                <a href="{% url 'requests' %}" class="btn btn-primary btn-lg me-2">View All Requests</a>
+                <a href="{% url 'create_request' %}" class="btn btn-success btn-lg">Create a New Request</a>
+            </div>
+
+            <!-- Unassigned Card -->
+            {% if user.is_authenticated %}
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3>Unassigned: {{ unassigned_requests }}</h3>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+
+    <h1> All Post</h1>
+    {% if user.is_authenticated %}
+    <div class="new-post-container my-5 mx-4">
+        <h2 class="new-post-title">New Post</h2>
+        {% if message %}
+        <div class="alert alert-success">{{ message }}</div>
+        {% endif %}
+        <form action="{% url 'new_post' %}" method="post" class="new-post-form">
+            {% csrf_token %}
+            <textarea name="content" class="form-control" rows="3" placeholder="What's on your mind?"></textarea>
+            <br>
+            <input type="submit" value="Post" class="btn btn-primary mt-3"/>
+        </form>
+    </div>
+    {% endif %}
+
+
+
+    <div class="all_posts">
+        {% for post in posts %}
+            {% include 'network/post.html' %}
+        {% endfor %}
+    </div>
+<!-- Pagination -->
+
+    {% include "network/pagination.html" with items=posts %}
+
+
+{% endblock %}

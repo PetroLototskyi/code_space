@@ -1,0 +1,16 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <h1> Posts from Users You Follow </h1>
+
+
+    <div class="all-posts">
+        {% for post in posts %}
+            {% include 'network/post.html' %}
+        {% endfor %}
+    </div>
+
+
+<!-- Pagggination -->
+    {% include "network/pagination.html" with items=posts %}
+{% endblock %}

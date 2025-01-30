@@ -1,0 +1,97 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<script>
+
+
+    // Function to handle toggling edit forms
+    document.addEventListener("DOMContentLoaded", function() {
+        const editButtons = document.querySelectorAll(".edit-btn");
+
+        editButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                const postId = button.getAttribute("data-post-id");
+
+                // Hide all other edit forms and post contents
+                document.querySelectorAll(".edit-form").forEach(form => form.style.display = "none");
+                document.querySelectorAll(".post-content").forEach(content => content.style.display = "block");
+
+                // Show the clicked post's edit form
+                document.getElementById("edit-form-" + postId).style.display = "block";
+                document.getElementById("post-content-" + postId).style.display = "none";
+            });
+        });
+    });
+
+     // Function to handle the like/unlike action via AJAX
+     function toggleLike(postId) {
+        fetch(`/toggle_like/${postId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const likeButton = document.querySelector(`#like-button-${postId}`);
+            likeButton.textContent = data.liked ? 'Unlike' : 'Like';
+            const likeCount = document.querySelector(`#like-count-${postId}`);
+            likeCount.textContent = data.likes + ' Likes';
+        });
+    }
+</script>
+
+<h2>All Posts</h2>
+
+{% if user.is_authenticated %}
+    <form action="{% url 'new_post' %}" method="post">
+        {% csrf_token %}
+        <textarea class="form-control" name="content" placeholder="Write a new post..." rows="3"></textarea>
+        <button type="submit" class="btn btn-primary mt-2">Post</button>
+    </form>
+{% endif %}
+
+<hr>
+
+{% for post in posts %}
+    <div class="post">
+        <h5><a href="{% url 'profile' post.user.username %}">{{ post.user.username }}</a></h5>
+        <p id="post-content-{{ post.id }}" class="post-content">{{ post.content }}</p>
+        <small>{{ post.timestamp }}</small>
+
+        <p id="like-count-{{ post.id }}">{{ post.likes.count }} Likes</p>
+
+        {% if user.is_authenticated %}
+            <button class="btn btn-link" onclick="toggleLike({{ post.id }})" id="like-button-{{ post.id }}">
+                {% if request.user in post.likes.all %}
+                    Unlike
+                {% else %}
+                    Like
+                {% endif %}
+            </button>
+            {% if post.user == user %}
+                <!-- Edit button for the post owner -->
+                <button class="btn btn-primary edit-btn" data-post-id="{{ post.id }}">Edit</button>
+                <!-- Edit form (hidden by default) -->
+                <form class="edit-form" id="edit-form-{{ post.id }}" method="POST" action="{% url 'edit_post' post.id %}" style="display:none;">
+                    {% csrf_token %}
+                    <textarea class="form-control" name="content" id="content-{{ post.id }}">{{ post.content }}</textarea>
+                    <button class="btn btn-success" type="submit">Save</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
+    <hr>
+{% endfor %}
+
+<div class="pagination">
+    {% if posts.has_previous %}
+        <a href="?page={{ posts.previous_page_number }}" class="btn btn-secondary">Previous</a>
+    {% endif %}
+    {% if posts.has_next %}
+        <a href="?page={{ posts.next_page_number }}" class="btn btn-secondary">Next</a>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,169 @@
+{% extends "layout.html" %}
+{% load custom_filters %}
+{% load static %}
+{% block title %}Engineering{% endblock %}
+
+{% block content %}
+
+<h1 class="d-flex justify-content-between mb-4 text-end">
+    <span>Engineering Requests</span>
+    <!-- Search field -->
+    <form method="get" action="{% url 'engineering' %}" class="d-flex align-items-center me-0">
+        <label for="search" class="form-label me-2" style="font-size: 1.25rem;">Req.#</label>
+        <input type="text" name="search" class="form-control" id="search" placeholder="Search requests" value="{{ request.GET.search }}">
+    </form>
+
+</h1>
+
+<div class="table-responsive">
+<table class="table table-bordered table-striped" style="table-layout: fixed; width: 100%;">
+    <thead>
+        <tr>
+            <th style="width:7%;">
+             <div class="d-flex align-items-center flex-column">
+                Req.#
+                <!-- Request sort -->
+                <button id="sort-req-number" class="btn btn-sm btn-outline-light mt-2">
+                    Sort
+                </button>
+            </div>
+            </th>
+
+            <th style="white-space: nowrap; width: 7%;">By</th>
+            <th style="white-space: nowrap; width: 8%;">
+                <div class="d-flex align-items-center flex-column">
+                Request <br> Type
+                 </div>
+            </th>
+            <th style="white-space: nowrap; width: 16%;">
+                Status
+                <!-- Request status filter -->
+                <select id="status-filter" class="form-select mt-2">
+                    <option value="">All</option>
+                    <option value="Unprocessed">Unprocessed</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Subm. For Review">Subm. For Review</option>
+                    <option value="Cancelled">Cancelled</option>
+                    <option value="Completed">Completed</option>
+                </select>
+                </th>
+            <th style="white-space: nowrap; width: 9%;">
+                <div class="d-flex align-items-center flex-column">
+                Assgn.
+                 <!-- Request assigned filter -->
+                <input id="assigned-filter" type="text" class="form-control mt-2" placeholder="Search Assigned">
+            </div>
+            </th>
+            <th style="white-space: nowrap; width: 15%;">
+                <div class="d-flex align-items-center flex-column">
+                Date<br>Completed
+            </div>
+            </th>
+            <th style="white-space: nowrap; width: 12%;">Notes</th>
+            <th style="white-space: nowrap; width: 14.5%;">
+                <div class="d-flex align-items-center flex-column">
+                Description of<br>Action
+                </div>
+            </th>
+            <th style="white-space: nowrap; width: 14.5%;">
+                <div class="d-flex align-items-center flex-column">
+                Validation of<br>Action
+                </div>
+            </th>
+            <th style="white-space: nowrap; width: 10%;">
+                <div class="d-flex align-items-center flex-column">
+                Drawings
+                </div>
+            </th>
+            <th  style="white-space: nowrap; width: 8%;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in engineering_requests %}
+        <tr>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="request_id" value="{{ request.id }}">
+                <td>
+                    <a href="{% url 'request_detail' request.id %}" class="card-link">{{ request.request_number }}</a>
+                </td>
+                <td>{{ request.requested_by }}</td>
+                <td>{{ request.request_type }}</td>
+                <td>
+                    <select name="status" class="form-control" style="width: 100%;">
+
+                        <option value="Unprocessed" {% if request.status == "Unprocessed" %}selected{% endif %}>Unprocessed</option>
+                        <option value="In Progress" {% if request.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                        <option value="Subm. For Review" {% if request.status == "Submitted For Review" %}selected{% endif %}>Subm. For Review</option>
+                        <option value="Cancelled" {% if request.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                        <option value="Completed" {% if request.status == "Completed" %}selected{% endif %}>Completed</option>
+                    </select>
+                </td>
+                <td style="width: 100%;">
+                    <!-- {{ request.assigned }} -->
+                    <select name="engineer_id" class="form-control">
+                        <option value="">None</option>
+                            {% for engineer in engineers %}
+                            <option value="{{ engineer.id }}" {% if request.assigned and request.assigned.id == engineer.id %}selected{% endif %}>
+                                {{ engineer.username }}
+                            </option>
+                            {% endfor %}
+                    </select>
+                </td>
+
+                <td>
+                    <input type="date" class="form-control" name="date_completed" value="{{ request.date_completed|date:'Y-m-d'  }}" style="width: 100%;">
+                </td>
+                <td>
+                    <!-- {{ request.notes }} -->
+                    <textarea name="notes" class="form-control" placeholder="Notes" style="width: 100%;">{{ request.notes }}</textarea>
+                </td>
+
+                <td>
+                    <!-- {{ request.description_of_action|default:"" }} -->
+                    <textarea name="description_of_action" class="form-control" placeholder="Description of Action" style="width: 100%;" >{{ request.description_of_action|default:"" }}</textarea>
+                </td>
+                <td>
+                    <!-- {{ request.validation_of_action }} -->
+                    <textarea name="validation_of_action" class="form-control" placeholder="Validation of Action" style="width: 100%;">{{ request.validation_of_action }}</textarea>
+                </td>
+                <td>
+                    {% if request.drawing_request.exists %}
+
+                        {% for drawing in request.drawing_request.all %}
+
+                                <a href="{{ drawing.file.url }}" target="_blank" rel="noopener noreferrer">
+                                    {{ drawing.drawing_number }}_Rev.{{ drawing.drawing_revision }}
+                                </a>
+
+                        {% endfor %}
+
+                {% else %}
+                    <p>None</p>
+                {% endif %}
+
+                </td>
+                <td class="action-btn ">
+                    <div class="d-flex align-items-center flex-column">
+                        <button type="submit" class="btn btn-outline-dark custom-btn"
+                        data-bs-toggle="tooltip" data-bs-placement="top"
+                        title="Click to save entered information">
+                        Update</button>
+                        <a href="{% url 'request_detail' request.id %}" class="btn btn-outline-dark custom-edit my-1"
+                        data-bs-toggle="tooltip" data-bs-placement="top"
+                        title="Click to edit the request">
+                        Edit</a>
+                    </div>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'eco_requests/engineering.js' %}"></script>
+{% endblock scripts %}

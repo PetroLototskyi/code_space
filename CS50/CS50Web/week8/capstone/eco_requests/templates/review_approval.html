@@ -1,0 +1,328 @@
+{% extends "layout.html" %}
+
+{% load custom_filters %}
+{% load static %}
+{% block title %}Review/Approval{% endblock %}
+
+{% block content %}
+
+<h2>Review/Approval Page</h2>
+<br>
+
+<div class="table-responsive">
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="white-space: nowrap; width: 5%; background-color: #2D2D2D">Req. #
+                <!-- Request filter -->
+                <div class="d-flex align-items-center flex-column">
+                    <input id="request-number-filter" type="text" class="form-control mt-2" placeholder="#" style="width: 50px;">
+                </div>
+            </th>
+            <th style="white-space: nowrap; width: 25%; background-color: #2D2D2D">Drawing
+                <!-- Drawing number filter -->
+                <div class="d-flex align-items-center flex-column">
+                    <input id="drawing-filter" type="text" class="form-control mt-2" placeholder="Search Drawing">
+                </div>
+            </th>
+            <th style="white-space: nowrap; width: 20%; background-color: #2D2D2D">Dr. status
+                <!-- Drawing status filter -->
+                <div class="d-flex align-items-center flex-column">
+                    <select id="drawing-status-filter" class="form-control mt-2">
+                        <option value="">All</option>
+                        {% for choice in drawing_status_choices %}
+                            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </th>
+            <th style="white-space: nowrap; width: 10%; background-color: #212589">Reviewer
+                <!-- Reviewer (username) filter -->
+                <div class="d-flex align-items-center flex-column">
+                    <select id="reviewer-filter" class="form-control mt-2">
+                        <option value="">All</option>
+                        {% for reviewer in reviewers %}
+                            <option value="{{ reviewer.username }}">{{ reviewer.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </th>
+            <th style="white-space: nowrap; width: 15%; background-color: #212589">Rev. Comments</th>
+            <th style="white-space: nowrap; width: 7%; background-color: #289a48;">Reviewer</th>
+            <th style="white-space: nowrap; width: 7%; background-color: #289a48;">Originator</th>
+            <th style="white-space: nowrap; width: 7%; background-color: #289a48;">Dir. QC</th>
+            <th style="white-space: nowrap; width: 7%; background-color: #289a48;">Dir. Eng.</th>
+            <th style="white-space: nowrap; width: 8%; background-color: #289a48;">Approval Status
+                <!-- Approval status filter -->
+                <div class="d-flex align-items-center flex-column">
+                    <select id="approval-status-filter" class="form-control mt-2">
+                        <option value="">All</option>
+                        {% for choice in approval_status_choices %}
+                            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </th>
+            <th style="white-space: nowrap; width: 5%; background-color: #2D2D2D;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in requests %}
+            {% for drawing in request.drawing_request.all %}
+
+            <form method="post">
+                {% csrf_token %}
+                <tr>
+                     <!-- Request number -->
+                    <td>{{ request.request_number }}
+                        <input type="hidden" name="request_id" value="{{ request.id }}">
+                        <input type="hidden" name="request_number" value="{{ request.request_number }}">
+                    </td>
+                       <!-- Drawing number -->
+                    <td>
+                        <a href="{{ drawing.file.url }}" target="_blank" rel="noopener noreferrer">
+                            {{ drawing.drawing_number }}_Rev.{{ drawing.drawing_revision }}
+                        </a>
+                    </td>
+                    <!-- Drawing Status -->
+                    <td>
+                         <select name="drawing_status" class="form-control">
+                            {% for choice in drawing_status_choices %}
+                            <option value="{{ choice.0 }}" {% if choice.0 == drawing.drawing_status %}selected{% endif %}>
+                                {{ choice.1 }}
+                            </option>
+                            {% endfor %}
+                         </select>
+                    </td>
+                    <!-- Reviewer Dropdown -->
+                    <td>
+                        <select name="reviewer_id" class="form-control">
+                            <option value="">None</option>
+                                {% for reviewer in reviewers %}
+                                <option value="{{ reviewer.id }}" {% if reviewer.id == drawing.drawing_reviewer_id %}selected{% endif %}>
+                                    {{ reviewer.username }}
+                                </option>
+                                {% endfor %}
+                        </select>
+                    </td>
+
+                    <!-- Rev. Comments Column -->
+                    <td>
+                        <a href="{% url 'drawing_reviews' drawing.id %}" class="btn btn-link">Review Page</a>
+                    </td>
+                     <!-- Reviewer Checkbox -->
+                    <td>
+
+                       {{ drawing.drawing_reviewer }}
+
+                       {% if drawing.drawing_reviewer == none %}
+                            <input type="checkbox" name="reviewer" value="yes" disabled>
+                       {% else %}
+
+                       {% for approval in approvals_obj %}
+                        {% if approval.drawing_id == drawing.id %}
+
+                            {% if approval.reviewer %}
+                                <!-- If approval.reviewer is True, check the checkbox -->
+                                <input type="checkbox" name="reviewer" value="yes" checked
+                                        {% if drawing.drawing_reviewer.username != user.username %}disabled{% endif %}>
+                                        <!-- Hidden input only when the checkbox is disabled -->
+                                        {% if drawing.drawing_reviewer.username != user.username %}
+                                            <input type="hidden" name="reviewer_hidden" value="yes">
+                                        {% endif %}
+                             {% else %}
+                                <!-- If it's the assigned reviewer (drawing.drawing_reviewer) -->
+                                {% if drawing.drawing_reviewer.username == user.username %}
+                                    <input type="checkbox" name="reviewer" value="yes">
+                                         <!-- Hidden input for reviewer state -->
+                                    <input type="hidden" name="reviewer_hidden" value="no">
+                                {% else %}
+                                    <!-- If the logged-in user is not the assigned reviewer, disable the checkbox -->
+                                    <input type="checkbox" name="reviewer" value="yes"
+                                            {% if approval.reviewer %}checked{% endif %}
+                                            disabled>
+                                    <!-- Hidden input to include reviewer state in form submission -->
+                                    <input type="hidden" name="reviewer_hidden" value="{% if approval.reviewer %}yes{% else %}no{% endif %}">
+                                {% endif %}
+                                {% endif %}
+                            {% endif %}
+                         {% endfor %}
+                       {% endif %}
+
+
+                    </td>
+                    <!-- Originator Checkbox  -->
+                    <td>
+                        {{ request.requested_by }}
+
+                        {% with approvals_obj|filter_by_drawing:drawing.id as drawing_approvals %}
+                        {% if not drawing_approvals %}
+                            <!-- If there's no assigned reviewer, disable the checkbox -->
+                            <input type="checkbox" name="reviewer_{{ drawing.id }}" value="yes" disabled>
+                        {% else %}
+
+                        {% for approval in approvals_obj %}
+                        {% if approval.drawing_id == drawing.id %}
+
+                            {% if approval.originator %}
+                                <!-- If approval.originator is True, check the checkbox -->
+                                <input type="checkbox" name="originator" value="yes" checked
+                                        {% if request.requested_by.username != user.username %}disabled{% endif %}>
+                                        <!-- Hidden input only when the checkbox is disabled -->
+                                        {% if request.requested_by.username != user.username %}
+                                            <input type="hidden" name="originator_hidden" value="yes">
+                                        {% endif %}
+                            {% else %}
+                                <!-- If it's the assigned originator -->
+                                {% if request.requested_by.username == user.username %}
+                                    <input type="checkbox" name="originator" value="yes">
+                                          <!-- Hidden input for originator state -->
+                                    <input type="hidden" name="originator_hidden" value="no">
+                                {% else %}
+                                    <!-- If the logged-in user is not the assigned reviewer, disable the checkbox -->
+                                    <input type="checkbox" name="originator" value="yes"
+                                            {% if approval.originator %}checked{% endif %}
+                                            disabled>
+                                    <!-- Hidden input to include originator state in form submission -->
+                                    <input type="hidden" name="originator_hidden" value="{% if approval.originator %}yes{% else %}no{% endif %}">
+                                {% endif %}
+                                {% endif %}
+                            {% endif %}
+                         {% endfor %}
+
+                         {% endif %}
+                         {% endwith %}
+
+                     </td>
+                     <!-- Dir.QC Checkbox  -->
+                    <td>{{ director_qc.username }}
+                        {% with approvals_obj|filter_by_drawing:drawing.id as drawing_approvals %}
+                        {% if not drawing_approvals %}
+                            <!-- If there's no assigned reviewer, disable the checkbox -->
+                            <input type="checkbox" name="reviewer_{{ drawing.id }}" value="yes" disabled>
+                        {% else %}
+
+                        {% for approval in approvals_obj %}
+                        {% if approval.drawing_id == drawing.id %}
+
+                            {% if approval.dir_qc %}
+                                <!-- If approval.originator is True, check the checkbox -->
+                                <input type="checkbox" name="dir_qc" value="yes" checked
+                                        {% if director_qc.username != user.username %}disabled{% endif %}>
+                                        <!-- Hidden input only when the checkbox is disabled -->
+                                        {% if director_qc.username != user.username %}
+                                            <input type="hidden" name="dir_qc_hidden" value="yes">
+                                        {% endif %}
+                            {% else %}
+                                <!-- If it's the dir qc -->
+                                {% if director_qc.username == user.username %}
+                                    <input type="checkbox" name="dir_qc" value="yes" >
+                                            <!-- Hidden input for dir_qc state -->
+                                    <input type="hidden" name="dir_qc_hidden" value="no">
+                                {% else %}
+                                    <!-- If the logged-in user is not the assigned reviewer, disable the checkbox -->
+                                    <input type="checkbox" name="dir_qc" value="yes"
+                                            {% if approval.dir_qc %}checked{% endif %}
+                                            disabled>
+                                    <!-- Hidden input to include dir_qc state in form submission -->
+                                    <input type="hidden" name="dir_qc_hidden" value="{% if approval.dir_qc %}yes{% else %}no{% endif %}">
+                                {% endif %}
+                                {% endif %}
+                            {% endif %}
+                         {% endfor %}
+
+                         {% endif %}
+                         {% endwith %}
+
+                    </td>
+                    <!-- Dir. Eng. Checkbox  -->
+                    <td>{{ director_eng.username }}
+                        {% with approvals_obj|filter_by_drawing:drawing.id as drawing_approvals %}
+                        {% if not drawing_approvals %}
+                            <!-- If there's no assigned reviewer, disable the checkbox -->
+                            <input type="checkbox" name="reviewer_{{ drawing.id }}" value="yes" disabled>
+                        {% else %}
+
+                        {% for approval in approvals_obj %}
+                        {% if approval.drawing_id == drawing.id %}
+
+                            {% if approval.dir_eng %}
+                                <!-- If approval.dir_eng is True, check the checkbox -->
+                                <input type="checkbox" name="dir_eng" value="yes" checked
+                                        {% if director_eng.username != user.username %}disabled{% endif %}>
+                                        <!-- Hidden input only when the checkbox is disabled -->
+                                        {% if director_eng.username != user.username %}
+                                            <input type="hidden" name="dir_eng_hidden" value="yes">
+                                        {% endif %}
+                            {% else %}
+                                <!-- If it's the dir eng -->
+                                {% if director_eng.username == user.username %}
+                                    <input type="checkbox" name="dir_eng" value="yes" >
+                                            <!-- Hidden input for dir_eng state -->
+                                    <input type="hidden" name="dir_eng_hidden" value="no">
+                                {% else %}
+                                    <!-- If the logged-in user is not the assigned reviewer, disable the checkbox -->
+                                    <input type="checkbox" name="dir_eng" value="yes"
+                                            {% if approval.dir_eng %}checked{% endif %}
+                                            disabled>
+                                    <!-- Hidden input to include dir_qc state in form submission -->
+                                    <input type="hidden" name="dir_eng_hidden" value="{% if approval.dir_eng %}yes{% else %}no{% endif %}">
+                                {% endif %}
+                                {% endif %}
+                            {% endif %}
+                         {% endfor %}
+
+                         {% endif %}
+                         {% endwith %}
+
+                    </td>
+
+                    <!-- Approval Status Dropdown -->
+                    <td>
+
+                        <select name="approval_status" class="form-control">
+                            <option value="">Select Status</option>
+
+
+                            {% with approval_obj=approvals_obj|filter_by_drawing:drawing.id|first %}
+                            {% if approval_obj %}
+                                <!-- If an approval object exists -->
+                                {% for choice in approval_status_choices %}
+                                    <option value="{{ choice.0 }}" {% if choice.0 == approval_obj.status %}selected{% endif %}>
+                                        {{ choice.1 }}
+                                    </option>
+                                {% endfor %}
+                            {% else %}
+                                <!-- If no approval object exists -->
+                                {% for choice in approval_status_choices %}
+                                    <option value="{{ choice.0 }}">
+                                        {{ choice.1 }}
+                                    </option>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+
+                        </select>
+
+                    </td>
+                    <!-- Save Button -->
+                    <td>
+                        <input type="hidden" name="drawing_id" value="{{ drawing.id }}">
+                        <button type="submit" class="btn btn-light btn btn-outline-dark"
+                        data-bs-toggle="tooltip" data-bs-placement="top"
+                        title="Click to save updates">
+                        Save</button>
+                    </td>
+                </tr>
+            </form>
+            {% endfor %}
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'eco_requests/review_approval.js' %}"></script>
+{% endblock scripts %}

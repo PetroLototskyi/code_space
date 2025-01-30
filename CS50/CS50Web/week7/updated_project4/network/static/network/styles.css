@@ -1,0 +1,22 @@
+body {
+    padding: 20px;
+}
+
+.post {
+    margin-bottom: 20px;
+}
+
+.btn-link {
+    color: #007bff;  /* Custom link color */
+    text-decoration: none;  /* Remove underline */
+}
+
+.btn-link:hover {
+    color: #0056b3;  /* Darker color on hover */
+    text-decoration: underline;  /* Underline on hover */
+}
+
+.btn-link:focus {
+    outline: none;  /* Remove the focus outline */
+    box-shadow: none;  /* Optional: removes the shadow on focus */
+}

@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit Request{% endblock %}
+
+{% block content %}
+<h1>Edit Request</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="description"><b>Description</b></label>
+        <textarea id="description" name="description" class="form-control" rows="4">{{ request.description }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="reason_for_action"><b>Reason for Action</b></label>
+        <textarea id="reason_for_action" name="reason_for_action" class="form-control" rows="4">{{ request.reason_for_action }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="notes"><b>Notes</b></label>
+        <textarea id="notes" name="notes" class="form-control" rows="4">{{ request.notes }}</textarea>
+    </div>
+
+    <!-- Attachments Section -->
+     <br>
+    <div class="form-group">
+        <label for="attachments"><b>Attachments</b></label>
+        <div>
+            {% if request.attachments.exists %}
+                <ul>
+                    {% for attachment in request.attachments.all %}
+                        <li>
+                            <a href="{{ attachment.file.url }}" target="_blank" rel="noopener noreferrer">{{ attachment.file.name }}</a>
+                            <!-- Option to delete the attachment (optional) -->
+                            <a href="{% url 'delete_attachment' attachment.id %}" class="text-danger" onclick="return confirm('Are you sure you want to delete this attachment?');">Delete</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>None</p>
+            {% endif %}
+        </div>
+
+        <!-- File Upload for new attachments -->
+        <div class="form-group">
+            <label for="new_attachment">Upload New Attachment</label>
+            <input type="file" name="new_attachment" id="new_attachment" class="form-control">
+        </div>
+    </div>
+    <br>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+<a href="{% url 'requests' %}" class="btn btn-secondary mt-3">Back to Requests</a>
+{% endblock %}

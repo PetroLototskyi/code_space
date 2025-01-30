@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Currency</title>
+    </head>
+    <body>
+        <h1>USD to EUR Exchange Rate:</h1>
+        <p id="exchange-rate"></p>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var myHeaders = new Headers();
+                myHeaders.append("apikey", "vjGPI94ayzLBrHVxDb6WFXprUeTewcya"); // Replace with your actual API key
+
+                var requestOptions = {
+                    method: 'GET',
+                    redirect: 'follow',
+                    headers: myHeaders
+                };
+
+                fetch("https://api.apilayer.com/exchangerates_data/latest?symbols=EUR&base=USD", requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    const rate = data.rates.EUR;
+                    // document.querySelector('#exchange-rate').innerHTML = `1 USD = ${rate} EUR`;
+                })
+                .catch(error => {
+                    console.log('Error:', error);
+                });
+            });
+        </script>
+    </body>
+</html>

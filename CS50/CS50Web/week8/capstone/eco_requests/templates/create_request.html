@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h2>Create a New Request</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- This will render only the fields you included in the form -->
+
+        <h4>Attachments</h4>
+        {{ attachment_formset.management_form }}
+        {% for form in attachment_formset %}
+            {{ form.as_p }}
+        {% endfor %}
+
+
+        <button type="submit" class="btn btn-primary">Submit Request</button>
+
+
+    </form>
+    <a href="{% url 'requests' %}" class="btn btn-secondary my-2">Back to Requests</a>
+
+    {% if form.errors %}
+        <div class="alert alert-danger mt-5">
+            <strong>There were errors in your submission:</strong>
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endblock %}
+

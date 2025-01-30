@@ -1,0 +1,27 @@
+textarea {
+    min-height: 400px;
+}
+
+.grey{
+    background-color: #ccc;
+    margin-top: 10px;
+    border-top: 1px solid #007BFF;
+    padding-top: 10px;
+}
+.white{
+    background-color: white;
+    margin-top: 10px;
+    border-top: 1px solid #007BFF;
+    padding-top: 10px;
+}
+
+
+/* #reply-box {
+    margin-top: 20px;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+  }
+
+  #send-reply {
+    width: 100px;
+  } */
