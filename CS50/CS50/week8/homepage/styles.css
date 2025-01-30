@@ -1,0 +1,83 @@
+/* put image in backround for main page */
+body.main-page {
+    background-image: url('background.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+
+  }
+
+  body.about-page {
+    /* background-color: #CCCCCC; /*chose baclground color for about page */
+
+  }
+
+   .accordion-item {
+    margin-top: 20px; /* Adjust the margin-top as needed to move accordion-item  down */
+  }
+  .accordion-button {
+    font-size: 25px; /* Adjust the font size as needed */
+    text-align: left; /* Align the text to the left */
+    font-weight: bold; /* Make the text bold */
+    padding-left: 20px; /* Adjust the padding-left as needed for indentation */
+    color: #332021;
+
+  }
+  .accordion-collapse{
+    font-size: 20px; /* Adjust the font size as needed */
+    padding-left: 20px; /* Adjust the padding-left as needed for indentation */
+    color: #221C15;
+  }
+
+  .aligment-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* 100% of the viewport height to center vertically */
+    margin: 0; /* Remove default margin */
+
+  }
+  .about-container {
+    display: flex;
+    align-items: center;
+    max-width: 1450px; /* Set a maximum width for the container */
+    width: 100%;
+    padding: 10px; /* Add padding to the container */
+    font-size: 30px;
+}
+
+#about-IMG {
+  max-width: 50%;
+  height: auto;
+  margin-right: 20px;
+}
+.contact-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+.contact-middle {
+  display: flex;
+  align-items: center;
+}
+
+.contact-middle p strong {
+  font-weight: bold;
+}
+.contact-middle p {
+  margin: 0; /* Remove default margin for paragraphs */
+  margin-right: 20px; /* Adjust the margin between text and image */
+
+}
+#phone {
+  text-align: right; /* Center the text */
+}
+
+
+.Chimp {
+  max-width: 200px; /* Adjust the maximum width of the image */
+  height: auto;
+  margin-right: 20px; /* Adjust the margin between text and image */
+}

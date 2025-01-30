@@ -1,0 +1,14 @@
+sort1 uses: Bubble sorting algorithm
+
+How do you know?: It is slowest algorithm for random and reversed numbers,
+but for sorted number it is speed up 20 times
+
+sort2 uses: Merge sorting algoritm
+
+How do you know?:It is the fastest algorithm from all three,
+and his time relatively identical on sorting random, reversed and sorted numbers.
+
+sort3 uses: Selection sorting algoritm
+
+How do you know?: It is perform faster than first algorithm, but slower than second.
+His times also relatively identical for different inputs.

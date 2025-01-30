@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block main %}
+
+
+<h2>Printed Labels History</h2>
+<p><br></p>
+
+<form method="GET" action="/history">
+    <div class="button-container">
+        <button class="btn btn-primary" type="submit">Filter table info</button>
+    </div>
+    <br>
+    <br>
+    <div class="table-container">
+        <table class="table table-striped table-bordered" id="labelTable">
+            <thead>
+                <tr>
+                    <th>
+                        <label for="partNumberFilter">Part Number:</label>
+                        <input type="text" name="partNumberFilter" id="partNumberFilter">
+                    </th>
+                    <th>Revision</th>
+                    <th>Quantity</th>
+                    <th>
+                        <label for="dateFilter">Date:</label>
+                        <input type="text" name="dateFilter" id="dateFilter">
+                    </th>
+                    <th>
+                        <label for="lotFilter">Lot:</label>
+                        <input type="text" name="lotFilter" id="lotFilter">
+                    </th>
+                    <th>
+                        <label for="locationFilter">Location:</label>
+                        <input type="text" name="locationFilter" id="locationFilter">
+                    </th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for label in labels %}
+                <tr>
+                    <td>{{ label["part_number"] }}</td>
+                    <td>{{ label["revision"] }}</td>
+                    <td>{{ label["quantity"] }}</td>
+                    <td>{{ label["date"] }}</td>
+                    <td>{{ label["lot"] }}</td>
+                    <td>{{ label["location"] }}</td>
+                    <td>{{ label["time"] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</form>
+
+{% endblock %}

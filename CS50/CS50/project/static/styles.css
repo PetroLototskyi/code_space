@@ -1,0 +1,91 @@
+/* Size for brand */
+nav .navbar-brand
+{
+    font-size: xx-large;
+}
+
+/* Colors for brand */
+
+nav .navbar-brand .red
+{
+    /* color: #ea433b; */
+    color: #eb5951;
+    /* color: #cc41ff; */
+    /* color: #ff574c; */
+}
+nav .navbar-brand .yellow
+{
+    /* color: #f5b82e; */
+    /* color: #cc41ff; */
+    color: #ffb20a;
+
+}
+nav .navbar-brand .green
+{
+    /* color: #2e944b; */
+    color: #05bbaa;
+}
+
+/* Position the Inventory word */
+.inventory-text {
+    margin-left: 20px;
+    margin-right: 10px;
+    letter-spacing: 4px;
+  }
+
+
+/* Color for nav-bar  */
+  .custom-navbar {
+    background-color: #534293;
+}
+
+/* Color for nab bar links */
+    #navbar .nav-link {
+    color: #05bbaa;
+}
+
+/* Color for btn */
+    .btn-primary {
+    color: #ffb20a;
+    background-color: #534293;
+}
+
+/* Color for btn hover over */
+    .btn-primary:hover {
+    background-color: #05bbaa;
+    color: #534293;
+}
+
+/* Color for headers */
+    h2 {
+    color:  #534293; /* Change this to your desired text color */
+}
+
+/* color for body */
+    body {
+        /* background-color: #F1F1F8; */
+        background-color: #F3F9FD;
+}
+
+/* Add some custom styling to set max-height and overflow-y */
+.table-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+
+/* Make first - filter row - not movebal in history table */
+#labelTable th {
+    position: sticky;
+    top: 0;
+    background-color: #F3F9FD; /* (was: #f8f9fa)*/
+    z-index: 0; /* Make sure the headers are above other content */
+}
+
+/*  limit autocompleat to 15 items */
+.ui-widget li:nth-child(n+15) {
+    display: none;
+}
+
+
+

@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Label Creator
+{% endblock %}
+
+{% block main %}
+<script>
+$(function() {
+
+    // Generate array from pythone list of lists
+    var item_bin_array = [
+        {% for entry in bin_list %}
+        {label:"{{ entry[0] }}", idx:"{{ entry[1] }}" },
+        {% endfor %}
+    ];
+
+    // Autocompleate form with filing out location field
+    $( "#part_number" ).autocomplete({
+        source: item_bin_array,
+        select: function(event, ui) { $('#location').val(ui.item.idx) ; }
+    });
+});
+</script>
+
+<h2>Generate Inventory Label</h2>
+
+
+<div class="container mt-4">
+    <form method="POST" action="/generate-label" target="_blank">
+        <div class="row justify-content-center">
+            <div class="col-md-4 mb-2">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="part_number" name="part_number" placeholder="Part number" required>
+                    <label for="part_number">Part number</label>
+                </div>
+            </div>
+
+            <div class="col-md-2 mb-2">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="revision" name="revision" placeholder="Rev" required>
+                    <label for="revision">Revision</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-2 mb-2">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="qty" name="qty" placeholder="Quantity" required min="1">
+                    <label for="qty">Quantity</label>
+                </div>
+            </div>
+
+            <div class="col-md-2 mb-2">
+                <div class="form-floating">
+                    <input type="date" class="form-control" id="date_open" name="date_open" placeholder="Date open" required value="{{ today }}">
+                    <label for="date_open">Date open</label>
+                </div>
+            </div>
+
+            <div class="col-md-2 mb-2">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="lot" name="lot" placeholder="Lot" required>
+                    <label for="lot">Lot</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6 mb-4">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="location" name="location" placeholder="Location" required>
+                    <label for="location">Location</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <button class="btn btn-primary" type="submit">Generate Label</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

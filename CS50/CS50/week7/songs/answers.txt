@@ -1,0 +1,11 @@
+-- If songs.db contains the top 100 songs of one listener from 2018, how would you characterize their audio aura?
+
+The audio aura extracted from songs.db would show the listener's musical atmosphere in 2018, highlighting the predominant energy,
+valence, and danceability of their top 100 songs during that period.
+
+-- Hypothesize about why the way you’ve calculated this aura might not be very representative of the listener.
+-- What better ways of calculating this aura would you propose?
+
+The current calculation method, relying on a basic average, may not fully capture the listener's diverse musical
+preferences and emotional nuances. To enhance representation, considering weighted averages, prioritizing frequently
+played or favorite songs, would offer a more nuanced and accurate portrayal of the listener's unique audio aura.
