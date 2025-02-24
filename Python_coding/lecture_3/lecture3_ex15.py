@@ -11,9 +11,9 @@ def main():
     pi_approx = 0
 
     for i in range(n):
-        term = 4/(2*i+1)
-        if i%2==1:
-            term=-term
+        term = 4/(2*i+1) # Compute the next term in the series: 4 / (odd denominator)
+        if i%2==1: # Check if the term index 'i' is odd
+            term=-term  # Alternate signs (+, -, +, -, ...) for correct series computation
         pi_approx+=term
 
     print(f"\nApproximation of π using {n} terms: {pi_approx}")
