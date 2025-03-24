@@ -14,4 +14,4 @@ def main() :
     for ch in message: 
         print(ord(ch) , end=" ") 
     print() # blank line before prompt 
-main()
+main() 
