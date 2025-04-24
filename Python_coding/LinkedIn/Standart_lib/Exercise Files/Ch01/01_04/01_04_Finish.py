@@ -2,7 +2,7 @@
 # List -> lists numbers from the inputted tuple
 
 numberedContestants = range(30)
-
+print(numberedContestants)
 print(list(numberedContestants))
 
 for c in list(numberedContestants):

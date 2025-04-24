@@ -7,7 +7,7 @@ print(type("Hi there"))
 class Car:
     pass
 
-class Truck():
+class Truck(Car):
     pass
 
 c = Car()
