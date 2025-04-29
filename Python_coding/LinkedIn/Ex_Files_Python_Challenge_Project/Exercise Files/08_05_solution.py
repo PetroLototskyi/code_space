@@ -194,5 +194,5 @@ def circleBottom(x):
 
 
 canvas = Canvas(40, 40)
-scribe = TerminalScribe(canvas, color='lavender')
+scribe = TerminalScribe(canvas, color='lavander')
 scribe.forward(10)
