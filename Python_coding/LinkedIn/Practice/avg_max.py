@@ -4,10 +4,10 @@ def find_winner(player_scores):
     winner=""
 
     for name, scores in player_scores.items():
-        print(name)
-        print(scores)
+        # print(name)
+        # print(scores)
         avg=sum(scores)/len(scores)
-        print(avg)
+        # print(avg)
         if avg>highest_score:
             highest_score=avg
             winner=name

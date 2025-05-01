@@ -6,9 +6,8 @@ def describe_items(food_items, color):
             for item in food_items[category][subcategory]:
                 item_info=food_items[category][subcategory][item]
                 if color ==item_info.get("color"):
-                    result.append(f'The {item} is {item_info.get("taste")}')
+                    result.append(f'The {item} is {item_info.get("taste")}.')
                 
-
 
     return result
 
