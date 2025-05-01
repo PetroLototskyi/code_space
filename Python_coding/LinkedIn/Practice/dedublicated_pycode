@@ -1,0 +1,9 @@
+def prepare_list(animals):
+    # Your code goes here
+    my_set=set(animals)
+    return sorted(list(my_set))
+
+animals = ["crow", "cat", "bluejay", "cat", "woodpecker", "fox", "fox", "crow"]
+result = prepare_list(animals)
+
+print(result)
